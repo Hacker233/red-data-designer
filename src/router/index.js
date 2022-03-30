@@ -1,20 +1,28 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-
 Vue.use(VueRouter);
 
-const routes = [
-  {
-    path: "/",
-    name: "Home",
-    component: () => import("@/views/designer/index.vue"),
-  },
-];
+import Designer from "@/views/designer/index";
+import Preview from "@/views/preview/index";
 
-const router = new VueRouter({
-  mode: "history",
-  base: process.env.BASE_URL,
-  routes,
+// 创建 router 实例，然后传 `routes` 配置
+export default new VueRouter({
+  //mode: 'history',
+  routes: [
+    {
+      path: "/",
+      name: "Designer",
+      component: Designer,
+    },
+    {
+      path: "/preview",
+      name: "preview",
+      component: Preview,
+    },
+    {
+      path: "/view",
+      name: "view",
+      component: Preview,
+    },
+  ],
 });
-
-export default router;

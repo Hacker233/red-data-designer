@@ -1,17 +1,28 @@
 import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
-import store from "./store";
-import "normalize.css";
+
 import ElementUI from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
-import "@/components/index.js"; // 注册全局组件
 
+import * as echarts from "echarts";
+
+import dataV from "@jiaminghi/data-view";
+import { registerOption } from "@/components/registerOption";
+
+import "./assets/iconfont/iconfont.css"; // 图标
+
+//注册echarts地图
+import chinaGeoJson from "@/assets/map/china.json";
+echarts.registerMap("china", chinaGeoJson);
+
+Vue.prototype.$echarts = echarts;
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
+Vue.use(dataV);
+registerOption();
 
 new Vue({
   router,
-  store,
   render: (h) => h(App),
 }).$mount("#app");

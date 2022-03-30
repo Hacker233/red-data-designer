@@ -1,0 +1,257 @@
+<template>
+  <div class="config-bar-box">
+    <!-- 标题栏 -->
+    <div class="config-bar-title">
+      <p>操作</p>
+    </div>
+    <el-row>
+      <el-tabs v-model="configTab" :stretch="true">
+        <el-tab-pane label="基础设置" name="basic" v-if="cptDataFormShow">
+          <div style="width: 200px; margin: 0 auto">
+            <el-row style="padding: 10px 6px 0 6px">
+              宽度：<el-input-number
+                :min="20"
+                :max="2000"
+                v-model="currentPosition.cptWidth"
+                size="small"
+                @change="changeConfig"
+              />
+            </el-row>
+            <el-row style="padding: 10px 6px 0 6px">
+              高度：<el-input-number
+                :min="20"
+                :max="1500"
+                v-model="currentPosition.cptHeight"
+                size="small"
+                @change="changeConfig"
+              />
+            </el-row>
+            <el-row style="padding: 10px 6px 0 6px">
+              X 轴：<el-input-number
+                :min="-500"
+                :max="2500"
+                v-model="currentPosition.cptX"
+                size="small"
+                @change="changeConfig"
+              />
+            </el-row>
+            <el-row style="padding: 10px 6px 0 6px">
+              Y 轴：<el-input-number
+                :min="-500"
+                v-model="currentPosition.cptY"
+                size="small"
+                @change="changeConfig"
+              />
+            </el-row>
+            <el-row style="padding: 10px 6px 0 6px">
+              Z 轴：<el-input-number
+                :min="1"
+                :max="1800"
+                v-model="currentPosition.cptZ"
+                size="small"
+                @change="changeConfig"
+              />
+            </el-row>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="属性" name="custom" v-if="cptDataFormShow">
+          <div class="customForm" v-if="currentCpt && currentCpt.option">
+            <comment
+              :is="currentCpt.cptName + '-option'"
+              :attribute="currentCpt.option.attribute"
+            ></comment>
+          </div>
+        </el-tab-pane>
+        <!-- 展示数据表单需在option.js初始化cptDataForm -->
+        <el-tab-pane label="数据" name="data" v-if="cptDataFormShow">
+          <div class="customForm">
+            <el-form size="mini" label-position="top">
+              <el-form-item label="数据类型">
+                <el-radio-group
+                  v-model="currentCpt.option.cptDataForm.dataSource"
+                >
+                  <el-radio :label="1">静态数据</el-radio>
+                  <el-radio :label="2">接口</el-radio>
+                  <el-radio :label="3">sql</el-radio>
+                </el-radio-group>
+              </el-form-item>
+              <el-form-item label="轮询">
+                <el-switch
+                  v-model="dataPollEnable"
+                  active-text="开启"
+                  inactive-text="关闭"
+                />
+              </el-form-item>
+              <el-form-item label="轮询时间(s)" v-show="dataPollEnable">
+                <el-input-number
+                  v-model="currentCpt.option.cptDataForm.pollTime"
+                  :min="0"
+                  :max="100"
+                  label="描述文字"
+                />
+              </el-form-item>
+              <el-form-item
+                :label="
+                  dataLabels[currentCpt.option.cptDataForm.dataSource - 1]
+                "
+              >
+                <el-input
+                  type="textarea"
+                  :rows="5"
+                  v-model="currentCpt.option.cptDataForm.dataText"
+                />
+              </el-form-item>
+              <el-form-item>
+                <el-button
+                  type="primary"
+                  style="width: 100%"
+                  @click="refreshCptData"
+                  >刷新数据</el-button
+                >
+              </el-form-item>
+            </el-form>
+          </div>
+        </el-tab-pane>
+      </el-tabs>
+    </el-row>
+
+    <!-- 未选中组件时 -->
+    <!-- <screen-setting v-else></screen-setting> -->
+    <!-- <no-data v-else></no-data> -->
+  </div>
+</template>
+
+<script>
+import NoData from "@/components/NoData/NoData.vue";
+import ScreenSetting from "./ScreenSetting.vue";
+export default {
+  name: "configBar",
+  props: {
+    currentCpt: Object,
+  },
+  data() {
+    return {
+      cptDataFormShow: false,
+      configTab: "custom",
+      currentPosition: {
+        cptWidth: 30,
+        cptHeight: 30,
+        cptX: 0,
+        cptY: 0,
+        cptZ: 0,
+      },
+      dataLabels: ["数据", "接口地址", "sql"],
+      configBarShow: false,
+    };
+  },
+  components: {
+    NoData,
+    ScreenSetting
+  },
+  watch: {
+    currentCpt(newVal) {
+      this.cptDataFormShow = false;
+      console.log("newVal",newVal)
+      if (!newVal) {
+        //清空时
+        this.configBarShow = false;
+      } else {
+        if (this.currentCpt.option.cptDataForm) {
+          this.cptDataFormShow = true;
+        } else {
+          this.configTab = "custom"; //解決上一組件沒有数据表单导致tab栏未选中bug
+        }
+      }
+    },
+  },
+  computed: {
+    dataPollEnable: {
+      get() {
+        return !!(
+          this.currentCpt.option.cptDataForm &&
+          this.currentCpt.option.cptDataForm.pollTime &&
+          this.currentCpt.option.cptDataForm.pollTime !== 0
+        );
+      },
+      set(newValue) {
+        if (newValue) {
+          this.currentCpt.option.cptDataForm.pollTime = 8;
+        } else {
+          this.currentCpt.option.cptDataForm.pollTime = 0;
+          this.refreshCptData(); //清除定时器
+        }
+        return newValue;
+      },
+    },
+  },
+  methods: {
+    // 刷新数据，调用父组件(index)中refreshCptData方法
+    // 在父组件中再调用选中图层中的refreshCptData方法
+    // 图层中的refreshCptData方法再自行调后端接口渲染数据，文本框的内容和数据类型组装在option.cptDataForm中
+    refreshCptData() {
+      this.$emit("refreshCptData");
+    },
+    showConfigBar() {
+      this.configBarShow = true;
+    },
+    updateData(currentPosition) {
+      this.currentPosition = currentPosition;
+      // console.log("刷新属性栏数据",this.currentPosition.cptX,this.currentPosition.cptY)
+    },
+    changeConfig() {
+      console.log("修改坐标", this.cptDataFormShow);
+      if (this.cptDataFormShow) {
+        this.$emit("change", this.currentPosition);
+      }
+    },
+  },
+};
+</script>
+
+<style lang="less" scoped>
+.config-bar-box {
+  color: #fff;
+  margin-left: 2px;
+  .config-bar-title {
+    height: 35px;
+    width: 100%;
+    display: flex;
+    border-bottom: 2px solid #409eff;
+    align-items: center;
+    justify-content: center;
+    background-color: #27343e;
+    p {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      letter-spacing: 2px;
+      background-color: #2d343c;
+      color: #fff;
+    }
+  }
+}
+/deep/ .el-tabs__header {
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+  z-index: 999;
+}
+/deep/ .el-form-item__label {
+  color: #fff;
+}
+.customForm {
+  padding: 0 6px 0 4px;
+  overflow: auto;
+}
+.configTs-enter-active,
+.configTs-leave-active {
+  transition: all 0.3s;
+}
+.configTs-enter,
+.configTs-leave-to {
+  opacity: 0;
+  transform: scale(0.3);
+  transform-origin: right bottom;
+}
+</style>

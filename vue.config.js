@@ -1,9 +1,23 @@
 module.exports = {
-  // 关闭eslint校验.
+  publicPath: "./",
+  outputDir: "dist",
   devServer: {
+    disableHostCheck: true,
+    port: 8080,
+    open: true,
     overlay: {
-      warnings: false, //不显示警告
+      warnings: false,
+      errors: true,
     },
   },
-  lintOnSave: false, //关闭eslint检查
+  lintOnSave: false, // 关闭eslint检查
+  css: {
+    loaderOptions: {
+      less: {
+        lessOptions: {
+          javascriptEnabled: true,
+        },
+      },
+    },
+  },
 };
