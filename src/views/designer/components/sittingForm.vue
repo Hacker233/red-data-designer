@@ -51,9 +51,6 @@
               @click.stop="handleRemove"
             ></i>
           </div>
-          <div v-else class="uploadItem" @click="showGallery">
-            <i style="font-size: 40px; color: #aaa" class="el-icon-plus"></i>
-          </div>
         </el-form-item>
       </el-form>
       <div style="text-align: center; margin-top: 10px">
@@ -66,16 +63,13 @@
         >
       </div>
     </el-dialog>
-    <gallery ref="gallery" @confirmCheck="confirmCheck" />
   </div>
 </template>
 
 <script>
 import { fileUrl } from "/env";
-import Gallery from "@/components/gallery";
 export default {
   name: "configForm",
-  components: { Gallery },
   props: {
     formData: Object,
   },
@@ -115,9 +109,6 @@ export default {
       this.formData.scaleX = split[0];
       this.formData.scaleY = split[1];
       this.$emit("updateScale");
-    },
-    showGallery() {
-      this.$refs.gallery.opened();
     },
     confirmCheck(fileUrl, fileId) {
       this.formData.bgImg = fileId;

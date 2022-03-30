@@ -11,9 +11,14 @@
     </div>
     <!-- 设置页面 -->
     <div class="screen-setting">
-      <el-form :model="formData" label-width="100px" size="small">
-        <el-form-item label="网站标题">
-          <el-input v-model="formData.title" autocomplete="off"></el-input>
+      <el-form
+        :model="formData"
+        label-width="90px"
+        label-position="left"
+        size="mini"
+      >
+        <el-form-item label="大屏名称">
+          <el-input v-model="formData.title" autocomplete="off" placeholder="请输入名称"></el-input>
         </el-form-item>
         <el-form-item label="屏幕比例">
           <el-select
@@ -33,47 +38,18 @@
         <el-form-item label="背景颜色">
           <el-color-picker v-model="formData.bgColor" show-alpha />
         </el-form-item>
-        <el-form-item label="背景图片">
-          <div
-            v-if="formData.bgImg"
-            style="width: 100%; height: 100%; position: relative"
-          >
-            <img
-              :src="fileUrl + '/file/img/' + formData.bgImg"
-              style="width: 100%; height: 100%"
-            />
-            <i
-              style="
-                position: absolute;
-                z-index: 6;
-                right: 0;
-                font-size: 20px;
-                color: #ffcccc;
-              "
-              class="el-icon-delete"
-              @click.stop="handleRemove"
-            ></i>
-          </div>
-          <div v-else class="uploadItem" @click="showGallery">
-            <i style="font-size: 40px; color: #aaa" class="el-icon-plus"></i>
-          </div>
-        </el-form-item>
       </el-form>
     </div>
   </div>
 </template>
 <script>
-import { fileUrl } from "/env";
-import Gallery from "@/components/gallery";
 export default {
   name: "configForm",
-  components: { Gallery },
   props: {
     formData: Object,
   },
   data() {
     return {
-      fileUrl: fileUrl,
       dialogVisible: false,
       scale: "",
       scaleOptions: [
@@ -107,12 +83,6 @@ export default {
       this.formData.scaleX = split[0];
       this.formData.scaleY = split[1];
       this.$emit("updateScale");
-    },
-    showGallery() {
-      this.$refs.gallery.opened();
-    },
-    confirmCheck(fileUrl, fileId) {
-      this.formData.bgImg = fileId;
     },
     handleRemove() {
       this.formData.bgImg = "";
@@ -151,6 +121,10 @@ export default {
     .iconfont {
       color: #409eff;
     }
+  }
+  .screen-setting {
+    padding: 20px 20px;
+    box-sizing: border-box;
   }
 }
 </style>

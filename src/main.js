@@ -7,19 +7,15 @@ import "element-ui/lib/theme-chalk/index.css";
 
 import * as echarts from "echarts";
 
-import dataV from "@jiaminghi/data-view";
 import { registerOption } from "@/components/registerOption";
 
-import "./assets/iconfont/iconfont.css"; // 图标
-
-//注册echarts地图
-import chinaGeoJson from "@/assets/map/china.json";
-echarts.registerMap("china", chinaGeoJson);
+import "@/assets/iconfont/iconfont.css"; // 图标
+import "@/style/index.css";
+import "normalize.css";
 
 Vue.prototype.$echarts = echarts;
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
-Vue.use(dataV);
 registerOption();
 
 new Vue({

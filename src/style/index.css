@@ -1,0 +1,73 @@
+/* 滚动条样式 */
+*::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+*::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color: rgba(144, 146, 152, .3);
+}
+
+*::-webkit-scrollbar-track {
+  border-radius: 4px;
+  background: #0f1014;
+}
+
+/* element样式修改 */
+.el-form {
+  display: flex;
+  flex-direction: column;
+  color: #fff;
+}
+
+.el-form-item__label {
+  color: #fff;
+  font-size: 12px;
+}
+
+/* 输入框 */
+.el-input {
+  border-color: #000;
+}
+
+.el-input__inner {
+  height: 28px;
+  line-height: 28px;
+  border: 1px solid #000;
+  background: #000;
+  color: #fff;
+  font-size: 12px;
+
+}
+
+.el-input__inner:hover {
+  border-color: #2681ff;
+}
+
+.el-select:hover .el-input__inner {
+  border-color: #2681ff;
+}
+
+/* 下拉选项 */
+.el-select-dropdown {
+  border-radius: 0;
+  border: none;
+  background-color: #27343e;
+}
+
+.el-select-dropdown__item {
+  color: #76787a;
+  font-size: 12px;
+}
+
+.el-select-dropdown__item.hover,
+.el-select-dropdown__item:hover {
+  background-color: rgba(0, 0, 0, 0.3);
+  color: #fff;
+}
+
+.el-select-dropdown__item.selected {
+  background-color: rgba(0, 0, 0, 0.3);
+  color: #fff;
+}

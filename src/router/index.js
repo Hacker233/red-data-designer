@@ -2,8 +2,8 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 Vue.use(VueRouter);
 
-import Designer from "@/views/designer/index";
-import Preview from "@/views/preview/index";
+const Designer = () => import("@/views/designer/index");
+const Preview = () => import("@/views/preview/index");
 
 // 创建 router 实例，然后传 `routes` 配置
 export default new VueRouter({

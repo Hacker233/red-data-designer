@@ -1,10 +1,10 @@
 import axios from "axios";
 import { MessageBox, Message } from "element-ui";
 
-const httpUtil = axios.create({
+const service = axios.create({
   timeout: 12000, // request timeout
 });
-httpUtil.interceptors.request.use(
+service.interceptors.request.use(
   (config) => {
     return config;
   },
@@ -13,7 +13,7 @@ httpUtil.interceptors.request.use(
   }
 );
 
-httpUtil.interceptors.response.use(
+service.interceptors.response.use(
   (response) => {
     const res = response.data;
     if (res.code !== 1) {
@@ -39,26 +39,4 @@ httpUtil.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-httpUtil.doRequest = function (url, method, params) {
-  return httpUtil({
-    url: url,
-    method: method,
-    params,
-  });
-};
-httpUtil.doGet = function (url, params) {
-  return httpUtil({
-    url: url,
-    method: "get",
-    params,
-  });
-};
-httpUtil.doPost = function (headers, url, data) {
-  return httpUtil({
-    headers: headers,
-    url: url,
-    method: "post",
-    data: data,
-  });
-};
-export default httpUtil;
+export default service;

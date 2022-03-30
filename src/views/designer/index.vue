@@ -233,15 +233,6 @@
         ></screen-setting>
       </div>
     </div>
-
-    <!-- 大屏整体设置 -->
-    <!-- <sitting-form
-      ref="sittingForm"
-      :formData="designData"
-      @saveSittingForm="saveSittingForm"
-      @cancel="cancelSittingForm"
-      @updateScale="initContainerSize"
-    /> -->
   </div>
 </template>
 
@@ -251,9 +242,7 @@ import ConfigBar from "./components/ConfigBar.vue"; // 右侧属性设置栏
 import cptOptions from "@/components/options";
 import SittingForm from "./components/sittingForm.vue"; // 大屏设置弹窗
 import html2canvas from "html2canvas";
-import { fileDownload, base64toFile } from "@/utils/FileUtil";
 import env from "/env";
-import { saveOrUpdateApi, uploadFileApi, getByIdApi } from "@/api/DesignerApi";
 import { clearCptInterval } from "@/utils/refreshCptData";
 
 import SketchRule from "../../components/RulerScale/sketchRuler.vue";

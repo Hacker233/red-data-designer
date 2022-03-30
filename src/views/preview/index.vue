@@ -50,7 +50,6 @@
 
 <script>
 import { fileUrl } from "/env";
-import { loadFile } from "@/utils/FileUtil";
 
 export default {
   name: "preview_index",
@@ -82,12 +81,6 @@ export default {
       if (!id) {
         let designCache = JSON.parse(localStorage.getItem("designCache"));
         this.loadDesign(designCache, false);
-      } else {
-        //演示环境用
-        loadFile("/cola-designer/designData/" + id + ".cd").then((text) => {
-          let designCache = text.data;
-          this.loadDesign(designCache, false);
-        });
       }
     },
     loadDesign(design, componentPares) {
