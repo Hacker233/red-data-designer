@@ -1,10 +1,10 @@
 <template>
   <el-row class="bar">
     <el-row class="topTab-box">
-      <el-col :class="currentTab === 1 ? 'focusTab' : ''" class="topTab">
+      <el-col :class="currentTab === 0 ? 'focusTab' : ''" class="topTab">
         <div class="title" @click="currentTab = 0">组件</div>
       </el-col>
-      <el-col :class="currentTab === 0 ? 'focusTab' : ''" class="topTab">
+      <el-col :class="currentTab === 1 ? 'focusTab' : ''" class="topTab">
         <div class="title" @click="currentTab = 1">图层</div>
       </el-col>
     </el-row>
@@ -23,6 +23,7 @@
             <el-col
               v-for="(item, index) in cptGroups[group.key]"
               :key="item.title + 'c' + index"
+              :span="12"
             >
               <div
                 draggable="true"
@@ -41,11 +42,8 @@
       </el-collapse>
     </div>
     <div v-show="currentTab === 1">
-      <div
-        v-show="selectedComponents.length === 0"
-        style="text-align: center; line-height: 50px"
-      >
-        无图层
+      <div v-show="selectedComponents.length === 0">
+        <no-data msg="暂无图层"></no-data>
       </div>
       <el-row
         v-for="(item, index) in selectedComponents"
@@ -76,7 +74,8 @@
 
 <script>
 import cptGroups from "@/components/registerCpt";
-import cptOptions from "@/components/options"; //重复引入待优化
+import cptOptions from "@/components/options";
+import NoData from '@/components/NoData/NoData.vue';
 
 export default {
   name: "componentBar",
@@ -88,6 +87,9 @@ export default {
       currentTab: 0, //0组件，1图层
       activeNames: "",
     };
+  },
+  components: {
+    NoData
   },
   props: {
     selectedComponents: Array,
@@ -131,6 +133,7 @@ export default {
   overflow-x: hidden;
   overflow-y: auto;
   .com-list {
+    margin: 10px 0 0 0;
     /deep/ .el-collapse {
       border: none;
     }
@@ -157,13 +160,19 @@ export default {
     }
     .chart-box {
       background-color: #3f4b5f;
-      height: 70px;
+      height: 80px;
       display: flex;
+      flex-direction: column;
+      justify-content: center;
       align-items: center;
       margin-top: 2px;
       cursor: pointer;
       color: #fff;
-      transition: all 0.3s;
+      border: 2px solid transparent;
+      &:hover {
+        border: 2px solid #2681ff;
+        cursor: move;
+      }
       .img-icon {
         height: 100%;
         display: flex;
@@ -173,10 +182,6 @@ export default {
         i {
           font-size: 30px;
         }
-      }
-      &:hover {
-        background-color: #61718d;
-        cursor: move;
       }
     }
   }
@@ -194,7 +199,9 @@ export default {
   .topTab {
     width: 100%;
     height: 100%;
-    font-size: 14px;
+    font-size: 12px;
+    background-color: #27343e;
+    border-top: 2px solid transparent;
     .title {
       width: 100%;
       height: 100%;
@@ -205,7 +212,8 @@ export default {
   }
 }
 .focusTab {
-  background: #3f4b5f;
+  color: #2681ff;
+  border-top: 2px solid #2681ff !important;
 }
 .selectedItem {
   line-height: 45px;

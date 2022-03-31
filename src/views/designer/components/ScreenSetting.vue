@@ -1,10 +1,6 @@
 <template>
   <!-- 没有选中组件时,默认展示大屏设置 -->
   <div class="screen-setting-box">
-    <!-- 标题栏 -->
-    <div class="config-bar-title">
-      <p>操作</p>
-    </div>
     <!-- 头部 -->
     <div class="screen-title">
       <i class="iconfont pig-changyong_shezhi"></i>
@@ -18,7 +14,11 @@
         size="mini"
       >
         <el-form-item label="大屏名称">
-          <el-input v-model="formData.title" autocomplete="off" placeholder="请输入名称"></el-input>
+          <el-input
+            v-model="formData.title"
+            autocomplete="off"
+            placeholder="请输入名称"
+          ></el-input>
         </el-form-item>
         <el-form-item label="屏幕比例">
           <el-select
@@ -93,24 +93,6 @@ export default {
 <style lang="less" scoped>
 // 大屏设置样式
 .screen-setting-box {
-  .config-bar-title {
-    height: 35px;
-    width: 100%;
-    display: flex;
-    border-bottom: 2px solid #409eff;
-    align-items: center;
-    justify-content: center;
-    background-color: #27343e;
-    p {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      letter-spacing: 2px;
-      background-color: #2d343c;
-      color: #fff;
-    }
-  }
   .screen-title {
     height: 35px;
     width: 100%;
@@ -118,6 +100,7 @@ export default {
     align-items: center;
     justify-content: center;
     background-color: #27343e;
+    border-top: 2px solid #409eff;
     .iconfont {
       color: #409eff;
     }

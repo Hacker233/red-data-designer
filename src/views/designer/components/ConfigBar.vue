@@ -1,58 +1,59 @@
 <template>
   <div class="config-bar-box">
-    <!-- 标题栏 -->
-    <div class="config-bar-title">
-      <p>操作</p>
-    </div>
     <el-row>
-      <el-tabs v-model="configTab" :stretch="true">
+      <el-tabs v-model="configTab" type="card" :stretch="true">
         <el-tab-pane label="基础设置" name="basic" v-if="cptDataFormShow">
-          <div style="width: 200px; margin: 0 auto">
-            <el-row style="padding: 10px 6px 0 6px">
-              宽度：<el-input-number
+          <el-form
+            :model="formData"
+            label-width="90px"
+            label-position="left"
+            size="mini"
+          >
+            <el-form-item label="图表宽度">
+              <el-input-number
                 :min="20"
                 :max="2000"
                 v-model="currentPosition.cptWidth"
-                size="small"
+                size="mini"
                 @change="changeConfig"
               />
-            </el-row>
-            <el-row style="padding: 10px 6px 0 6px">
-              高度：<el-input-number
+            </el-form-item>
+            <el-form-item label="图表高度">
+              <el-input-number
                 :min="20"
                 :max="1500"
                 v-model="currentPosition.cptHeight"
-                size="small"
+                size="mini"
                 @change="changeConfig"
               />
-            </el-row>
-            <el-row style="padding: 10px 6px 0 6px">
-              X 轴：<el-input-number
+            </el-form-item>
+            <el-form-item label="图表X轴">
+              <el-input-number
                 :min="-500"
                 :max="2500"
                 v-model="currentPosition.cptX"
-                size="small"
+                size="mini"
                 @change="changeConfig"
               />
-            </el-row>
-            <el-row style="padding: 10px 6px 0 6px">
-              Y 轴：<el-input-number
+            </el-form-item>
+            <el-form-item label="图表Y轴">
+              <el-input-number
                 :min="-500"
                 v-model="currentPosition.cptY"
-                size="small"
+                size="mini"
                 @change="changeConfig"
               />
-            </el-row>
-            <el-row style="padding: 10px 6px 0 6px">
-              Z 轴：<el-input-number
+            </el-form-item>
+            <el-form-item label="图表Z轴">
+              <el-input-number
                 :min="1"
                 :max="1800"
                 v-model="currentPosition.cptZ"
-                size="small"
+                size="mini"
                 @change="changeConfig"
               />
-            </el-row>
-          </div>
+            </el-form-item>
+          </el-form>
         </el-tab-pane>
         <el-tab-pane label="属性" name="custom" v-if="cptDataFormShow">
           <div class="customForm" v-if="currentCpt && currentCpt.option">
@@ -146,12 +147,12 @@ export default {
   },
   components: {
     NoData,
-    ScreenSetting
+    ScreenSetting,
   },
   watch: {
     currentCpt(newVal) {
       this.cptDataFormShow = false;
-      console.log("newVal",newVal)
+      console.log("newVal", newVal);
       if (!newVal) {
         //清空时
         this.configBarShow = false;
@@ -211,29 +212,14 @@ export default {
 <style lang="less" scoped>
 .config-bar-box {
   color: #fff;
-  margin-left: 2px;
-  .config-bar-title {
-    height: 35px;
-    width: 100%;
-    display: flex;
-    border-bottom: 2px solid #409eff;
-    align-items: center;
-    justify-content: center;
-    background-color: #27343e;
-    p {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      letter-spacing: 2px;
-      background-color: #2d343c;
-      color: #fff;
-    }
+  /deep/ .el-tabs__content {
+    padding: 20px 20px;
+    box-sizing: border-box;
   }
 }
 /deep/ .el-tabs__header {
   position: sticky;
-  top: 0;
+  top: 35px;
   background-color: #fff;
   z-index: 999;
 }

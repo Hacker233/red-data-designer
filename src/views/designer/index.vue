@@ -1,39 +1,7 @@
 <template>
   <div class="index-box">
     <!-- 顶部菜单 -->
-    <el-row class="top">
-      <el-col class="btn-box" :span="4" @click.self.native="outBlur">
-        <div>
-          <el-dropdown @command="exportCommand">
-            <span class="el-dropdown-link">
-              导出<i class="el-icon-arrow-down el-icon--right"></i>
-            </span>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command="img">图片</el-dropdown-item>
-              <el-dropdown-item command="json">设计文件</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-        </div>
-        <!-- 删除 -->
-        <div class="configBtn" @click="clearDesign">
-          <i style="font-size: 22px" class="el-icon-delete" />
-        </div>
-        <!-- 设置 -->
-        <div class="configBtn" @click="showSittingForm">
-          <i style="font-size: 22px" class="el-icon-setting" />
-        </div>
-        <el-button size="mini" @click="preview" class="preview-btn"
-          >预览</el-button
-        >
-        <el-button
-          size="mini"
-          type="primary"
-          @click="submitDesign"
-          class="submit-btn"
-          >保存</el-button
-        >
-      </el-col>
-    </el-row>
+    <top-header @saveImg="saveImg" @clearDesign="clearDesign" @preview="preview" @submitDesign="submitDesign"></top-header>
     <!-- 绘制区域 -->
     <div
       :style="{
@@ -214,7 +182,12 @@
           </div>
         </div>
       </div>
+      <!-- 属性这是面板 -->
       <div class="bottom-right">
+        <!-- 标题栏 -->
+        <div class="config-bar-title">
+          <p>操作</p>
+        </div>
         <!--组件属性设置面板-->
         <config-bar
           v-show="!isShowScreen"
@@ -237,10 +210,10 @@
 </template>
 
 <script>
+import TopHeader from "./components/TopHeader.vue"; // 顶部设置栏
 import ComponentBar from "./components/ComponentBar.vue"; // 左侧组件栏
 import ConfigBar from "./components/ConfigBar.vue"; // 右侧属性设置栏
 import cptOptions from "@/components/options";
-import SittingForm from "./components/sittingForm.vue"; // 大屏设置弹窗
 import html2canvas from "html2canvas";
 import env from "/env";
 import { clearCptInterval } from "@/utils/refreshCptData";
@@ -250,7 +223,7 @@ import ScreenSetting from "./components/ScreenSetting.vue";
 export default {
   name: "design-index",
   components: {
-    SittingForm,
+    TopHeader,
     ConfigBar,
     ComponentBar,
     SketchRule,
@@ -273,8 +246,6 @@ export default {
         scaleY: 9,
         version: "",
         bgColor: "#2B3340",
-        bgImg: "",
-        components: [],
       },
       oldDesignData: "", //大屏参数表单未保存时还原
       cacheComponents: [], // 缓存组件
@@ -415,7 +386,7 @@ export default {
         this.windowWidth - this.cptBarWidth - this.configWidth - 40; // 绘制区域宽度
       let tempHeight =
         (tempWidth / this.designData.scaleX) * this.designData.scaleY; // 绘制区域高度
-      const maxHeight = this.windowHeight - 50;
+      const maxHeight = this.windowHeight - 35;
       if (tempHeight > maxHeight) {
         tempWidth =
           (maxHeight / this.designData.scaleY) * this.designData.scaleX;
@@ -423,23 +394,14 @@ export default {
       //缩放思路：组件尺寸始终保持1920为基准，保证在每台电脑上的尺寸一致，设计实时缩放
       this.containerScale = Math.round((tempWidth / 1920) * 100) / 100; //原始比例1920
     },
-    // 导出
-    exportCommand(command) {
-      if (command === "img") {
-        html2canvas(this.$refs.webContainer, {
+    // 下载图片
+    saveImg(){
+      html2canvas(this.$refs.webContainer, {
           backgroundColor: "#49586e",
         }).then((canvas) => {
           const canvasData = canvas.toDataURL("image/jpeg");
           fileDownload(canvasData, this.designData.title + ".png");
         });
-      } else if (command === "json") {
-        this.designData.components = this.cacheComponents;
-        this.designData.version = env.version;
-        const data = JSON.stringify(this.designData);
-        let uri =
-          "data:text/csv;charset=utf-8,\ufeff" + encodeURIComponent(data); //encodeURIComponent解决中文乱码
-        fileDownload(uri, this.designData.title + ".cd");
-      }
     },
     // 清空大屏
     clearDesign() {
@@ -651,10 +613,6 @@ export default {
       this.showConfigBar(cpt, this.cacheComponents.length - 1); //丢下组件后刷新组件属性栏
       this.$refs["configBar"].showConfigBar();
     },
-    showSittingForm() {
-      this.oldDesignData = JSON.stringify(this.designData); //保存原有数据，点击取消时还原
-      this.$refs["sittingForm"].opened();
-    },
   },
   // 自定义指令
   directives: {
@@ -759,24 +717,6 @@ export default {
 .index-box {
   display: flex;
   flex-direction: column;
-  .top {
-    height: 45px;
-    box-shadow: 0 2px 5px #2b3340 inset;
-    color: #fff;
-    overflow: hidden;
-    margin: 0;
-    font-size: 18px;
-    line-height: 45px;
-    background-color: #1e2427;
-    display: flex;
-    justify-content: flex-end;
-    .btn-box {
-      display: flex;
-      align-items: center;
-      padding: 10px 0;
-      justify-content: space-around;
-    }
-  }
   .bottom {
     display: flex;
     background: url(../../assets/img/dot.png) repeat;
@@ -803,6 +743,27 @@ export default {
       width: 300px;
       background-color: #1e2427;
       overflow: auto;
+      position: relative;
+      .config-bar-title {
+        height: 35px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #27343e;
+        position: sticky;
+        top: 0;
+        z-index: 3;
+        p {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 13px;
+          letter-spacing: 2px;
+          background-color: #2d343c;
+          color: #fff;
+        }
+      }
     }
   }
 }
@@ -853,10 +814,6 @@ export default {
   z-index: 2000;
   border-radius: 50%;
 }
-.el-dropdown-link {
-  cursor: pointer;
-  color: #fff;
-}
 
 // 参考线样式
 .wrapper {
@@ -876,26 +833,6 @@ export default {
   width: 5000px;
   height: 3000px;
 }
-// .scale-value {
-//   position: absolute;
-//   left: 0;
-//   bottom: 100%;
-// }
-// .button {
-//   position: absolute;
-//   left: 100px;
-//   bottom: 100%;
-// }
-// .button-ch {
-//   position: absolute;
-//   left: 200px;
-//   bottom: 100%;
-// }
-// .button-en {
-//   position: absolute;
-//   left: 230px;
-//   bottom: 100%;
-// }
 #canvas {
   position: absolute;
   top: 80px;

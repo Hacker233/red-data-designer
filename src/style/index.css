@@ -6,7 +6,7 @@
 
 *::-webkit-scrollbar-thumb {
   border-radius: 5px;
-  background-color: rgba(144, 146, 152, .3);
+  background-color: rgba(144, 146, 152, 0.3);
 }
 
 *::-webkit-scrollbar-track {
@@ -38,7 +38,6 @@
   background: #000;
   color: #fff;
   font-size: 12px;
-
 }
 
 .el-input__inner:hover {
@@ -70,4 +69,79 @@
 .el-select-dropdown__item.selected {
   background-color: rgba(0, 0, 0, 0.3);
   color: #fff;
+}
+
+/* 颜色选择面板 */
+.el-color-picker__trigger {
+  border: 1px solid #000;
+}
+.el-color-picker__color {
+  border: 1px solid #000;
+}
+.el-color-picker__trigger:hover {
+  border-color: #2681ff;
+}
+
+/* tab切换栏 */
+.el-tabs__header {
+  background-color: #27343e !important;
+  border: transparent !important;
+  color: #fff;
+  margin: 0;
+}
+.el-tabs--card > .el-tabs__header .el-tabs__nav {
+  border: none;
+}
+.el-tabs--card > .el-tabs__header .el-tabs__item {
+  border: none;
+  color: #fff;
+  font-size: 12px;
+}
+.el-tabs__item {
+  border-top: 2px solid transparent !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.el-tabs__item.is-active {
+  color: #2681ff !important;
+  border-top: 2px solid #2681ff !important;
+}
+.el-tabs--card > .el-tabs__header .el-tabs__item.is-active {
+  border-top: 2px solid #2681ff !important;
+}
+.el-tabs--card > .el-tabs__header .el-tabs__item.is-active {
+  border-bottom-color: transparent !important;
+}
+
+/* 计数器 */
+.el-input-number--mini {
+  width: 100%;
+}
+.el-input-number__decrease {
+  background-color: #27343e;
+  color: #fff;
+  border: none;
+}
+.el-input-number__increase {
+  background-color: #27343e;
+  color: #fff;
+  border: none;
+}
+
+/* 按钮 */
+.el-button--primary {
+  color: #fff;
+  background-color: #27343e;
+  border-color: transparent;
+  font-size: 12px;
+}
+.el-button--primary:hover {
+  background-color: #27343e;
+  border-color: #2681ff;
+}
+.el-button--primary.is-active, .el-button--primary:active {
+  background-color: #000 !important;
+  background: #000 !important;
+  border-color: #2681ff;
 }
