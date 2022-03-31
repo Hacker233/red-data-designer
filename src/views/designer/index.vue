@@ -1,7 +1,12 @@
 <template>
   <div class="index-box">
     <!-- 顶部菜单 -->
-    <top-header @saveImg="saveImg" @clearDesign="clearDesign" @preview="preview" @submitDesign="submitDesign"></top-header>
+    <top-header
+      @saveImg="saveImg"
+      @clearDesign="clearDesign"
+      @preview="preview"
+      @submitDesign="submitDesign"
+    ></top-header>
     <!-- 绘制区域 -->
     <div
       :style="{
@@ -23,161 +28,135 @@
         />
       </div>
       <!-- 中间绘制区域 -->
-      <div class="bottom-center" id="wrapper" @click.self="outBlur">
-        <SketchRule
-          :lang="lang"
-          :thick="thick"
-          :scale="containerScale"
-          :width="width"
-          :height="height"
-          :startX="startX"
-          :startY="startY"
-          :shadow="shadow"
-          :palette="palette"
-          :horLineArr="lines.h"
-          :verLineArr="lines.v"
-          :isShowReferLine="isShowReferLine"
-          :cornerActive="true"
-          @handleLine="handleLine"
-          @onCornerClick="handleCornerClick"
-        >
-        </SketchRule>
-        <div
-          ref="screensRef"
-          id="screens"
-          @wheel="handleWheel"
-          @scroll="handleScroll"
-        >
-          <div ref="containerRef" class="screen-container">
-            <!-- <div id="canvas" :style="canvasStyle" /> -->
-            <div class="bottom-center-box">
+      <div
+        ref="wrapper"
+        class="bottom-center"
+        id="wrapper"
+        @click.self="outBlur"
+      >
+        <div ref="containerRef" class="screen-container" @wheel="handleWheel">
+          <!-- x轴 -->
+          <ruler-list-x></ruler-list-x>
+          <!-- y轴 -->
+          <ruler-list-y></ruler-list-y>
+          <!-- 眼睛 -->
+          <ruler-eye></ruler-eye>
+          <div
+            ref="webContainer"
+            id="canvas"
+            class="webContainer"
+            :style="{
+              width: '1920px',
+              height: (1920 / designData.scaleX) * designData.scaleY + 'px',
+              backgroundColor: designData.bgColor,
+              zoom: containerScale,
+            }"
+            @dragover="allowDrop"
+            @drop="drop"
+            @click.self="outBlur"
+          >
+            <!-- 循环组件 -->
+            <div
+              v-for="(item, index) in cacheComponents"
+              :key="item.keyId"
+              class="cptDiv"
+              :style="{
+                width: Math.round(item.cptWidth) + 'px',
+                height: Math.round(item.cptHeight) + 'px',
+                top: Math.round(item.cptY) + 'px',
+                left: Math.round(item.cptX) + 'px',
+                zIndex: currentCptIndex === index ? 1800 : item.cptZ,
+              }"
+              @mousedown="showConfigBar(item, index)"
+            >
+              <!--顶部辅助线-->
+              <div v-show="currentCptIndex === index" class="top-guides"></div>
+              <!--左侧辅助线-->
               <div
-                id="canvas"
-                class="webContainer"
-                :style="{
-                  width: '1920px',
-                  height: (1920 / designData.scaleX) * designData.scaleY + 'px',
-                  backgroundColor: designData.bgColor,
-                  backgroundImage: designData.bgImg
-                    ? 'url(' + fileUrl + '/file/img/' + designData.bgImg + ')'
-                    : 'url(../assets/img/draw-bg.png)',
-                  transform: 'scale(' + containerScale + ')',
-                }"
-                @dragover="allowDrop"
-                @drop="drop"
-                ref="webContainer"
-                @click.self="outBlur"
+                v-show="currentCptIndex === index"
+                class="bottom-guides"
+              ></div>
+
+              <!-- 移动区域 -->
+              <div
+                v-resize="'move'"
+                class="activeMask"
+                :style="
+                  currentCptIndex === index
+                    ? { border: '1px solid #B6BFCE' }
+                    : {}
+                "
               >
-                <!-- 循环组件 -->
-                <div
-                  v-for="(item, index) in cacheComponents"
-                  :key="item.keyId"
-                  class="cptDiv"
-                  :style="{
-                    width: Math.round(item.cptWidth) + 'px',
-                    height: Math.round(item.cptHeight) + 'px',
-                    top: Math.round(item.cptY) + 'px',
-                    left: Math.round(item.cptX) + 'px',
-                    zIndex: currentCptIndex === index ? 1800 : item.cptZ,
-                  }"
-                  @mousedown="showConfigBar(item, index)"
-                >
-                  <!--顶部辅助线-->
-                  <div
-                    v-show="currentCptIndex === index"
-                    class="top-guides"
-                  ></div>
-                  <!--左侧辅助线-->
-                  <div
-                    v-show="currentCptIndex === index"
-                    class="bottom-guides"
-                  ></div>
-
-                  <!-- 移动区域 -->
-                  <div
-                    v-resize="'move'"
-                    class="activeMask"
-                    :style="
-                      currentCptIndex === index
-                        ? { border: '1px solid #B6BFCE' }
-                        : {}
-                    "
-                  >
-                    <!-- 具体某一个组件 -->
-                    <div style="width: 100%; height: 100%">
-                      <comment
-                        :is="item.cptName"
-                        :ref="item.cptName + index"
-                        :width="Math.round(item.cptWidth)"
-                        :height="Math.round(item.cptHeight)"
-                        :option="item.option"
-                      />
-                    </div>
-                  </div>
-                  <!-- 组件右上角复制和删除按钮 -->
-                  <div class="delTag">
-                    <i
-                      class="el-icon-copy-document"
-                      @click.stop="copyCpt(item)"
-                    />
-                    <i
-                      style="margin-left: 4px"
-                      class="el-icon-delete"
-                      @click.stop="delCpt(item, index)"
-                    />
-                  </div>
-
-                  <!-- 组件边框上的8个拖拽点 -->
-                  <div
-                    v-show="currentCptIndex === index"
-                    style="top: -3px; left: -3px; cursor: se-resize"
-                    class="resizeTag"
-                    v-resize="'lt'"
-                  />
-                  <div
-                    v-show="currentCptIndex === index"
-                    style="top: -3px; left: 48%; cursor: s-resize"
-                    class="resizeTag"
-                    v-resize="'t'"
-                  />
-                  <div
-                    v-show="currentCptIndex === index"
-                    style="top: -3px; right: -4px; cursor: ne-resize"
-                    class="resizeTag"
-                    v-resize="'rt'"
-                  />
-                  <div
-                    v-show="currentCptIndex === index"
-                    style="top: 48%; right: -4px; cursor: w-resize"
-                    class="resizeTag"
-                    v-resize="'r'"
-                  />
-                  <div
-                    v-show="currentCptIndex === index"
-                    style="bottom: -4px; right: -4px; cursor: se-resize"
-                    class="resizeTag"
-                    v-resize="'rb'"
-                  />
-                  <div
-                    v-show="currentCptIndex === index"
-                    style="bottom: -4px; left: 48%; cursor: s-resize"
-                    class="resizeTag"
-                    v-resize="'b'"
-                  />
-                  <div
-                    v-show="currentCptIndex === index"
-                    style="bottom: -4px; left: -3px; cursor: ne-resize"
-                    class="resizeTag"
-                    v-resize="'lb'"
-                  />
-                  <div
-                    v-show="currentCptIndex === index"
-                    style="top: 48%; left: -3px; cursor: w-resize"
-                    class="resizeTag"
-                    v-resize="'l'"
+                <!-- 具体某一个组件 -->
+                <div style="width: 100%; height: 100%">
+                  <comment
+                    :is="item.cptName"
+                    :ref="item.cptName + index"
+                    :width="Math.round(item.cptWidth)"
+                    :height="Math.round(item.cptHeight)"
+                    :option="item.option"
                   />
                 </div>
               </div>
+              <!-- 组件右上角复制和删除按钮 -->
+              <div class="delTag">
+                <i class="el-icon-copy-document" @click.stop="copyCpt(item)" />
+                <i
+                  style="margin-left: 4px"
+                  class="el-icon-delete"
+                  @click.stop="delCpt(item, index)"
+                />
+              </div>
+
+              <!-- 组件边框上的8个拖拽点 -->
+              <div
+                v-show="currentCptIndex === index"
+                style="top: -3px; left: -3px; cursor: se-resize"
+                class="resizeTag"
+                v-resize="'lt'"
+              />
+              <div
+                v-show="currentCptIndex === index"
+                style="top: -3px; left: 48%; cursor: s-resize"
+                class="resizeTag"
+                v-resize="'t'"
+              />
+              <div
+                v-show="currentCptIndex === index"
+                style="top: -3px; right: -4px; cursor: ne-resize"
+                class="resizeTag"
+                v-resize="'rt'"
+              />
+              <div
+                v-show="currentCptIndex === index"
+                style="top: 48%; right: -4px; cursor: w-resize"
+                class="resizeTag"
+                v-resize="'r'"
+              />
+              <div
+                v-show="currentCptIndex === index"
+                style="bottom: -4px; right: -4px; cursor: se-resize"
+                class="resizeTag"
+                v-resize="'rb'"
+              />
+              <div
+                v-show="currentCptIndex === index"
+                style="bottom: -4px; left: 48%; cursor: s-resize"
+                class="resizeTag"
+                v-resize="'b'"
+              />
+              <div
+                v-show="currentCptIndex === index"
+                style="bottom: -4px; left: -3px; cursor: ne-resize"
+                class="resizeTag"
+                v-resize="'lb'"
+              />
+              <div
+                v-show="currentCptIndex === index"
+                style="top: 48%; left: -3px; cursor: w-resize"
+                class="resizeTag"
+                v-resize="'l'"
+              />
             </div>
           </div>
         </div>
@@ -217,17 +196,20 @@ import cptOptions from "@/components/options";
 import html2canvas from "html2canvas";
 import env from "/env";
 import { clearCptInterval } from "@/utils/refreshCptData";
-
-import SketchRule from "../../components/RulerScale/sketchRuler.vue";
 import ScreenSetting from "./components/ScreenSetting.vue";
+import RulerListX from "@/components/RulerList/RulerListX.vue";
+import RulerListY from "@/components/RulerList/RulerListY.vue";
+import RulerEye from "@/components/RulerList/RulerEye.vue";
 export default {
   name: "design-index",
   components: {
     TopHeader,
     ConfigBar,
     ComponentBar,
-    SketchRule,
     ScreenSetting,
+    RulerListX,
+    RulerListY,
+    RulerEye
   },
   data() {
     return {
@@ -253,31 +235,6 @@ export default {
       currentCpt: { option: undefined },
       containerScale: 1, // 缩放比例
       isShowScreen: true, // 是否显示大屏设置面板
-
-      // 参考线相关参数
-      // scale: 1, //658813476562495, //1,
-      startX: 0,
-      startY: 0,
-      lines: {
-        h: [0, 0],
-        v: [0, 0],
-      },
-      width: 5000,
-      height: 3000,
-      thick: 20,
-      lang: "zh-CN", // 中英文
-      isShowRuler: true, // 显示标尺
-      isShowReferLine: true, // 显示参考线
-      palette: {
-        bgColor: "#1e2427",
-        longfgColor: "#BABBBC",
-        shortfgColor: "#C8CDD0",
-        fontColor: "#fff",
-        shadowColor: "#E8E8E8",
-        lineColor: "#EB5648",
-        borderColor: "#DADADC",
-        cornerActiveColor: "rgb(235, 86, 72, 0.6)",
-      },
     };
   },
   computed: {
@@ -299,12 +256,6 @@ export default {
     this.loadCacheData();
   },
   mounted() {
-    // 滚动居中-参考线
-    this.$refs.screensRef.scrollLeft =
-      this.$refs.containerRef.getBoundingClientRect().width / 2 - 100; // 300 = #screens.width / 2
-    this.$nextTick(() => {
-      this.initSize();
-    });
     const that = this;
     window.addEventListener("keydown", (event) => {
       if (that.currentCptIndex !== -1) {
@@ -329,34 +280,21 @@ export default {
     });
     window.onresize = () => {
       return (() => {
-        that.initContainerSize();
+        that.initContainerSize(); // 初始化大小
+        this.initContainerLocal(); // 初始化位置
       })();
     };
+    this.initContainerLocal(); // 初始化位置
   },
   methods: {
-    handleLine(lines) {
-      // console.log("lines",lines)
-      this.lines = lines;
-    },
-    handleCornerClick() {
-      this.isShowReferLine = !this.isShowReferLine;
-      return;
-    },
-    // 绘制区域滚动
-    handleScroll() {
-      const screensRect = document
-        .querySelector("#screens")
-        .getBoundingClientRect();
-      const canvasRect = document
-        .querySelector("#canvas")
-        .getBoundingClientRect();
-      // 标尺开始的刻度
-      const startX =
-        (screensRect.left + this.thick - canvasRect.left) / this.containerScale;
-      const startY =
-        (screensRect.top + this.thick - canvasRect.top) / this.containerScale;
-      this.startX = startX >> 0;
-      this.startY = startY >> 0;
+    // 初始化位置
+    initContainerLocal() {
+      // 让容器滚动到正中间
+      this.$refs.webContainer.scrollIntoView({
+        // behavior: "smooth", //顺滑的滚动
+        block: "center", //容器上下的中间
+        inline: "center", //容器左右的左边
+      });
     },
     // 控制缩放值
     handleWheel(e) {
@@ -367,17 +305,6 @@ export default {
         );
         this.containerScale = nextScale;
       }
-      this.$nextTick(() => {
-        this.handleScroll();
-      });
-    },
-    initSize() {
-      const wrapperRect = document
-        .querySelector("#wrapper")
-        .getBoundingClientRect();
-      const borderWidth = 1;
-      this.width = wrapperRect.width - this.thick - borderWidth;
-      this.height = wrapperRect.height - this.thick - borderWidth;
     },
     initContainerSize() {
       this.windowWidth = document.documentElement.clientWidth; // 浏览器可视区域宽度
@@ -386,6 +313,7 @@ export default {
         this.windowWidth - this.cptBarWidth - this.configWidth - 40; // 绘制区域宽度
       let tempHeight =
         (tempWidth / this.designData.scaleX) * this.designData.scaleY; // 绘制区域高度
+      console.log("tempWidth", tempWidth, tempHeight);
       const maxHeight = this.windowHeight - 35;
       if (tempHeight > maxHeight) {
         tempWidth =
@@ -395,13 +323,13 @@ export default {
       this.containerScale = Math.round((tempWidth / 1920) * 100) / 100; //原始比例1920
     },
     // 下载图片
-    saveImg(){
+    saveImg() {
       html2canvas(this.$refs.webContainer, {
-          backgroundColor: "#49586e",
-        }).then((canvas) => {
-          const canvasData = canvas.toDataURL("image/jpeg");
-          fileDownload(canvasData, this.designData.title + ".png");
-        });
+        backgroundColor: "#49586e",
+      }).then((canvas) => {
+        const canvasData = canvas.toDataURL("image/jpeg");
+        fileDownload(canvasData, this.designData.title + ".png");
+      });
     },
     // 清空大屏
     clearDesign() {
@@ -832,18 +760,15 @@ export default {
 }
 .screen-container {
   position: absolute;
+  left: 0;
+  top: 0;
   width: 5000px;
   height: 3000px;
 }
 #canvas {
   position: absolute;
-  top: 80px;
+  top: 50%;
   left: 50%;
-  margin-left: -80px;
-  width: 160px;
-  height: 200px;
-  background: lightblue;
-  // transform-origin: 50% 0;
-  transform: translate(-50%, 0);
+  transform: translate(-50%, -50%);
 }
 </style>

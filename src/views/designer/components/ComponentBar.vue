@@ -174,13 +174,14 @@ export default {
         cursor: move;
       }
       .img-icon {
-        height: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
         width: 70px;
+        margin-bottom: 5px;
         i {
           font-size: 30px;
+          color: #2681ff;
         }
       }
     }

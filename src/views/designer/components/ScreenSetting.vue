@@ -87,9 +87,6 @@ export default {
       this.formData.scaleY = split[1];
       this.$emit("updateScale");
     },
-    handleRemove() {
-      this.formData.bgImg = "";
-    },
   },
 };
 </script>

@@ -4,9 +4,6 @@
       width: windowWidth + 'px',
       height: conHeight + 'px',
       backgroundColor: designCache.bgColor,
-      backgroundImage: designCache.bgImg
-        ? 'url(' + fileUrl + '/file/img/' + designCache.bgImg + ')'
-        : 'none',
     }"
     style="
       background-size: 100% 100%;

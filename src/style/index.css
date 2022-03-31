@@ -13,6 +13,9 @@
   border-radius: 4px;
   background: #0f1014;
 }
+::-webkit-scrollbar-corner {
+  background: #0f1014;
+}
 
 /* element样式修改 */
 .el-form {
