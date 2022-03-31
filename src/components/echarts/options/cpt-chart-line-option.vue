@@ -1,6 +1,5 @@
 <template>
   <el-form
-    :model="formData"
     label-width="90px"
     label-position="left"
     size="mini"

@@ -4,7 +4,6 @@
       <el-tabs v-model="configTab" type="card" :stretch="true">
         <el-tab-pane label="基础设置" name="basic" v-if="cptDataFormShow">
           <el-form
-            :model="formData"
             label-width="90px"
             label-position="left"
             size="mini"

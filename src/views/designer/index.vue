@@ -196,7 +196,7 @@
           :currentCpt="currentCpt"
           @refreshCptData="refreshCptData"
         />
-        <!-- 大屏设置面板-参考sitting-form -->
+        <!-- 大屏设置面板 -->
         <screen-setting
           v-show="isShowScreen"
           :formData="designData"
@@ -717,7 +717,9 @@ export default {
 .index-box {
   display: flex;
   flex-direction: column;
+  height: 100vh;
   .bottom {
+    flex: 1;
     display: flex;
     background: url(../../assets/img/dot.png) repeat;
 

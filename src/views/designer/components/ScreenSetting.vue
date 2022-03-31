@@ -46,7 +46,10 @@
 export default {
   name: "configForm",
   props: {
-    formData: Object,
+    formData: {
+      type: Object,
+      default: () => {},
+    },
   },
   data() {
     return {
