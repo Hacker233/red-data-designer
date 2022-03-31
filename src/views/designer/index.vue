@@ -5,7 +5,7 @@
     <!-- 绘制区域 -->
     <div
       :style="{
-        height: windowHeight - 45 + 'px',
+        height: windowHeight - 35 + 'px',
       }"
       class="bottom"
       @click.self="outBlur"
@@ -182,7 +182,7 @@
           </div>
         </div>
       </div>
-      <!-- 属性这是面板 -->
+      <!-- 右侧属性面板 -->
       <div class="bottom-right">
         <!-- 标题栏 -->
         <div class="config-bar-title">
