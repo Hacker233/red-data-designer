@@ -524,8 +524,8 @@ export default {
         keyId: require("uuid").v1(),
       };
       const group = cptOptions[config.group];
-      if (group && group.options[config.name + "-option"]) {
-        const option = group.options[config.name + "-option"];
+      if (group && group.options[config.name]) {
+        const option = group.options[config.name];
         cpt.option = JSON.parse(JSON.stringify(option));
       } else {
         this.$message.error(

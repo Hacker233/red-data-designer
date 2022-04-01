@@ -32,7 +32,7 @@
                 class="chart-box"
               >
                 <div class="img-icon">
-                  <i :class="item.icon ? item.icon : 'el-icon-question'"></i>
+                  <i :class="['iconfont',item.icon]"></i>
                 </div>
                 <div style="font-size: 13px">{{ item.title }}</div>
               </div>

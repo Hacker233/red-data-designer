@@ -1,7 +1,7 @@
 import Vue from "vue";
-import cpt_chart_line from "@/components/echarts/cpt-chart-line";
+import base_chart_line from "@/components/echarts/base-chart-line";
 
-let cptList = [cpt_chart_line];
+let cptList = [base_chart_line];
 
 let cptGroups = {};
 cptList.forEach((ele) => {

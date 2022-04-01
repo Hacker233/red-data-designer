@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 2796628 */
-  src: url('iconfont.woff2?t=1648709011461') format('woff2'),
-       url('iconfont.woff?t=1648709011461') format('woff'),
-       url('iconfont.ttf?t=1648709011461') format('truetype');
+  src: url('iconfont.woff2?t=1648792575901') format('woff2'),
+       url('iconfont.woff?t=1648792575901') format('woff'),
+       url('iconfont.ttf?t=1648792575901') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,22 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.pig-jurassic_pie-chart:before {
+  content: "\e6fb";
+}
+
+.pig-jurassic_pie-chart1:before {
+  content: "\e6fc";
+}
+
+.pig-zhuzhuangtu:before {
+  content: "\e623";
+}
+
+.pig-zhexiantu:before {
+  content: "\e9cf";
 }
 
 .pig-xiazai:before {

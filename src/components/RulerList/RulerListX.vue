@@ -1,10 +1,8 @@
 <template>
   <div class="ruler-listX-box">
-    <li
-      :class="[{ long: index % 10 === 0 }]"
-      v-for="index in 500"
-      :key="index"
-    ></li>
+    <li :class="[{ long: index % 10 === 0 }]" v-for="index in 500" :key="index">
+      <span v-if="index % 10 === 0">{{ index * 10 }}</span>
+    </li>
   </div>
 </template>
 <style lang="less" scoped>
@@ -27,6 +25,15 @@
     list-style: none;
     border: none;
     background-color: #fff;
+    position: relative;
+    span {
+      color: #fff;
+      font-size: 9px;
+      position: absolute;
+      top: 12px;
+      left: 3px;
+      zoom: 0.8;
+    }
   }
   .long {
     height: 12px;
