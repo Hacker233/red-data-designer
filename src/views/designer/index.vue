@@ -209,7 +209,7 @@ export default {
     ScreenSetting,
     RulerListX,
     RulerListY,
-    RulerEye
+    RulerEye,
   },
   data() {
     return {
@@ -473,6 +473,7 @@ export default {
     showConfigBar(item, index) {
       //刷新属性栏数据，页面上拖动的组件执行click事件来更新组件的属性栏
       this.currentCpt = item;
+      console.log("选中组件", item);
       this.isShowScreen = false; // 显示大屏设置面板
       this.currentCptIndex = index;
       let currentCptPosition = {

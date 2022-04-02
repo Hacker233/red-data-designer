@@ -49,124 +49,23 @@ export default {
   methods: {
     // 初始化图表
     initChart(attribute) {
+      let series = [];
+      console.log("this.chartData.data.series",this.chartData.data.series)
+      this.chartData.data.series.forEach((item) => {
+        series.push({
+          data: item,
+          type: "line",
+        });
+      });
       this.chartOption = {
-        backgroundColor: attribute.backgroundColor,
-        title: {
-          text: attribute.title.text,
-          textStyle: {
-            align: attribute.title.textStyle.align,
-            color: attribute.title.textStyle.color,
-            fontSize: attribute.title.textStyle.fontSize,
-          },
-          top: attribute.title.top,
-          left: attribute.title.left,
+        xAxis: {
+          type: attribute.xAxis.type,
+          data: this.chartData.data.xAxisData,
         },
-        grid: {
-          top: attribute.grid.top,
-          left: attribute.grid.left,
-          right: attribute.grid.right,
-          bottom: attribute.grid.bottom,
+        yAxis: {
+          type: attribute.yAxis.type,
         },
-        xAxis: [
-          {
-            type: attribute.xAxis[0].type,
-            axisLine: {
-              show: attribute.xAxis[0].axisLine.show,
-            },
-            axisLabel: {
-              color: attribute.xAxis[0].axisLabel.color,
-            },
-            boundaryGap: attribute.xAxis[0].boundaryGap,
-            data: this.chartData.dataText.xAxisData,
-          },
-        ],
-        yAxis: [
-          {
-            type: attribute.yAxis[0].type,
-            axisLine: {
-              show: attribute.yAxis[0].axisLine.show,
-            },
-          },
-        ],
-        series: [
-          {
-            name: "注册总量",
-            type: "line",
-            // smooth: true, //是否平滑
-            showAllSymbol: true,
-            // symbol: 'image://./static/images/guang-circle.png',
-            symbol: "circle",
-            symbolSize: 25,
-            lineStyle: {
-              normal: {
-                color: "#6c50f3",
-                shadowColor: "rgba(0, 0, 0, .3)",
-                shadowBlur: 0,
-                shadowOffsetY: 5,
-                shadowOffsetX: 5,
-              },
-            },
-            label: {
-              show: true,
-              position: "top",
-              textStyle: {
-                color: "#6c50f3",
-              },
-            },
-            itemStyle: {
-              color: "#6c50f3",
-              borderColor: "#fff",
-              borderWidth: 3,
-              shadowColor: "rgba(0, 0, 0, .3)",
-              shadowBlur: 0,
-              shadowOffsetY: 2,
-              shadowOffsetX: 2,
-            },
-            tooltip: {
-              show: false,
-            },
-            data: this.chartData.dataText.series[0],
-          },
-          {
-            name: "注册总量",
-            type: "line",
-            // smooth: true, //是否平滑
-            showAllSymbol: true,
-            // symbol: 'image://./static/images/guang-circle.png',
-            symbol: "circle",
-            symbolSize: 25,
-            lineStyle: {
-              normal: {
-                color: "#00ca95",
-                shadowColor: "rgba(0, 0, 0, .3)",
-                shadowBlur: 0,
-                shadowOffsetY: 5,
-                shadowOffsetX: 5,
-              },
-            },
-            label: {
-              show: true,
-              position: "top",
-              textStyle: {
-                color: "#00ca95",
-              },
-            },
-
-            itemStyle: {
-              color: "#00ca95",
-              borderColor: "#fff",
-              borderWidth: 3,
-              shadowColor: "rgba(0, 0, 0, .3)",
-              shadowBlur: 0,
-              shadowOffsetY: 2,
-              shadowOffsetX: 2,
-            },
-            tooltip: {
-              show: false,
-            },
-            data: this.chartData.dataText.series[1],
-          },
-        ],
+        series: series,
       };
       this.chart.setOption(this.chartOption);
     },

@@ -1,7 +1,7 @@
 import Vue from "vue";
-import cpt_chart_line_option from "@/components/echarts/options/cpt-chart-line-option";
+import base_chart_line_option from "@/components/echarts/options/base-chart-line-option";
 
-let cptOptionsList = [cpt_chart_line_option];
+let cptOptionsList = [base_chart_line_option];
 
 export function registerOption() {
   cptOptionsList.forEach((ele) => {

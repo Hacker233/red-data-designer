@@ -68,7 +68,7 @@
             <el-form size="mini" label-position="top">
               <el-form-item label="数据类型">
                 <el-radio-group
-                  v-model="currentCpt.option.cptDataForm.dataSource"
+                  v-model="currentCpt.option.dataForm.dataSource"
                 >
                   <el-radio :label="1">静态数据</el-radio>
                   <el-radio :label="2">接口</el-radio>
@@ -84,7 +84,7 @@
               </el-form-item>
               <el-form-item label="轮询时间(s)" v-show="dataPollEnable">
                 <el-input-number
-                  v-model="currentCpt.option.cptDataForm.pollTime"
+                  v-model="currentCpt.option.dataForm.pollTime"
                   :min="0"
                   :max="100"
                   label="描述文字"
@@ -92,13 +92,13 @@
               </el-form-item>
               <el-form-item
                 :label="
-                  dataLabels[currentCpt.option.cptDataForm.dataSource - 1]
+                  dataLabels[currentCpt.option.dataForm.dataSource - 1]
                 "
               >
                 <el-input
                   type="textarea"
                   :rows="5"
-                  v-model="currentCpt.option.cptDataForm.dataText"
+                  v-model="currentCpt.option.dataForm.dataText"
                 />
               </el-form-item>
               <el-form-item>
@@ -114,10 +114,6 @@
         </el-tab-pane>
       </el-tabs>
     </el-row>
-
-    <!-- 未选中组件时 -->
-    <!-- <screen-setting v-else></screen-setting> -->
-    <!-- <no-data v-else></no-data> -->
   </div>
 </template>
 
@@ -156,7 +152,7 @@ export default {
         //清空时
         this.configBarShow = false;
       } else {
-        if (this.currentCpt.option.cptDataForm) {
+        if (this.currentCpt.option.dataForm) {
           this.cptDataFormShow = true;
         } else {
           this.configTab = "custom"; //解決上一組件沒有数据表单导致tab栏未选中bug
@@ -168,16 +164,16 @@ export default {
     dataPollEnable: {
       get() {
         return !!(
-          this.currentCpt.option.cptDataForm &&
-          this.currentCpt.option.cptDataForm.pollTime &&
-          this.currentCpt.option.cptDataForm.pollTime !== 0
+          this.currentCpt.option.dataForm &&
+          this.currentCpt.option.dataForm.pollTime &&
+          this.currentCpt.option.dataForm.pollTime !== 0
         );
       },
       set(newValue) {
         if (newValue) {
-          this.currentCpt.option.cptDataForm.pollTime = 8;
+          this.currentCpt.option.dataForm.pollTime = 8;
         } else {
-          this.currentCpt.option.cptDataForm.pollTime = 0;
+          this.currentCpt.option.dataForm.pollTime = 0;
           this.refreshCptData(); //清除定时器
         }
         return newValue;
